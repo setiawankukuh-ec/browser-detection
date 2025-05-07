@@ -1,20 +1,17 @@
 import { useEffect, useState } from "react";
-import {
-  detectViaUserAgent,
-  detectWithBowser,
-  isInternetExplorer,
-} from "./utils/trackers/browser";
+import { BrowserDetector } from "./utils/trackers/browser";
 
 export default function IndexView() {
   const [results, setResults] = useState<Record<string, string>>({});
 
   useEffect(() => {
     const userAgent = navigator.userAgent;
+    const browserDetector = new BrowserDetector(userAgent);
 
     const detectionResults = {
-      "Detection with User Agent": detectViaUserAgent(userAgent),
-      "Detection with Bowser": detectWithBowser(),
-      "Detecting IE via features": isInternetExplorer(),
+      "Detection with User Agent": browserDetector.detect(),
+      "Detection with Bowser": browserDetector.detectWithBowser(),
+      "Detecting IE via features": browserDetector.isInternetExplorer,
     };
 
     setResults(detectionResults);
