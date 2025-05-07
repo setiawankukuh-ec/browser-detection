@@ -1,50 +1,59 @@
 import Bowser from "bowser";
 
-// IE 6–11 has `document.documentMode`
-export function isInternetExplorer(): string {
-  return `${!!(window as any).document?.documentMode}`;
-}
+export class BrowserDetector {
+  private userAgent: string;
 
-/* https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Browser_detection_using_the_user_agent */
-export function detectViaUserAgent(userAgent: string): string {
-  if (userAgent.includes("MSIE") || userAgent.includes("Trident/")) {
-    return "Internet Explorer";
-  } else if (userAgent.includes("Seamonkey/")) {
-    return "Seamonkey";
-  } else if (
-    userAgent.includes("Firefox/") &&
-    !userAgent.includes("Seamonkey/")
-  ) {
-    return "Firefox";
-  } else if (userAgent.includes("OPR/")) {
-    return "Opera (Blink)";
-  } else if (userAgent.includes("Opera/")) {
-    return "Opera (Presto)";
-  } else if (
-    userAgent.includes("Chrome/") &&
-    !userAgent.includes("Chromium/") &&
-    !userAgent.match(/Edg\//)
-  ) {
-    return "Chrome";
-  } else if (userAgent.includes("Chromium/")) {
-    return "Chromium";
-  } else if (
-    userAgent.includes("Safari/") &&
-    !userAgent.includes("Chrome/") &&
-    !userAgent.includes("Chromium/")
-  ) {
-    return "Safari";
-  } else if (userAgent.match(/Edg\//)) {
-    return "Edge";
-  } else {
-    return "Other";
+  constructor(userAgent: string) {
+    this.userAgent = userAgent;
   }
-}
 
-/* https://www.npmjs.com/package/bowser */
-export function detectWithBowser(): string {
-  const browser = Bowser.getParser(window.navigator.userAgent);
-  const browserName = browser.getBrowserName();
-  const browserVersion = browser.getBrowserVersion();
-  return browserName ? `${browserName} ${browserVersion}` : "Unknown";
+  detect(): string {
+    if (
+      this.userAgent.includes("MSIE") ||
+      this.userAgent.includes("Trident/")
+    ) {
+      return "Internet Explorer";
+    } else if (this.userAgent.includes("Seamonkey/")) {
+      return "Seamonkey";
+    } else if (
+      this.userAgent.includes("Firefox/") &&
+      !this.userAgent.includes("Seamonkey/")
+    ) {
+      return "Firefox";
+    } else if (this.userAgent.includes("OPR/")) {
+      return "Opera (Blink)";
+    } else if (this.userAgent.includes("Opera/")) {
+      return "Opera (Presto)";
+    } else if (
+      this.userAgent.includes("Chrome/") &&
+      !this.userAgent.includes("Chromium/") &&
+      !this.userAgent.match(/Edg\//)
+    ) {
+      return "Chrome";
+    } else if (this.userAgent.includes("Chromium/")) {
+      return "Chromium";
+    } else if (
+      this.userAgent.includes("Safari/") &&
+      !this.userAgent.includes("Chrome/") &&
+      !this.userAgent.includes("Chromium/")
+    ) {
+      return "Safari";
+    } else if (this.userAgent.match(/Edg\//)) {
+      return "Edge";
+    } else {
+      return "Other";
+    }
+  }
+
+  detectWithBowser(): string {
+    const browser = Bowser.getParser(this.userAgent);
+    const browserName = browser.getBrowserName();
+    const browserVersion = browser.getBrowserVersion();
+    return browserName ? `${browserName} ${browserVersion}` : "Unknown";
+  }
+
+  public get isInternetExplorer(): string {
+    const isIE = !!(window as any).document?.documentMode;
+    return isIE.toString();
+  }
 }
